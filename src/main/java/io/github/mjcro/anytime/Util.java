@@ -27,6 +27,17 @@ class Util {
             Locale.ROOT
     );
 
+    static final Pattern patternISO8601 = Pattern.compile("\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}(:\\d{2}(:\\d{2})?)?(Z|[+-]\\d{2}(:?\\d{2})?)");
+    static final DateTimeFormatter fmtISO8601 = new DateTimeFormatterBuilder()
+            .appendPattern("yyyy-MM-dd['T'][' ']HH[:mm[:ss]]")
+            .optionalStart().appendZoneId().optionalEnd()
+            .optionalStart().appendOffset("+HHmm", "+0000").optionalEnd()
+            .optionalStart().appendOffset("+HH:mm", "+00:00").optionalEnd()
+            .optionalStart().appendOffset("+HH", "+00").optionalEnd()
+            .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+            .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+            .toFormatter();
+
     private Util() {
     }
 }

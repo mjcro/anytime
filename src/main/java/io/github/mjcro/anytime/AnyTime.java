@@ -6,50 +6,75 @@ import java.time.ZoneId;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
+/**
+ * General use case parser able to transform date/time in most used
+ * formats into Java Instant object.
+ * <p>
+ * Immutable and thread safe.
+ */
 public class AnyTime {
+    /**
+     * UTC timezone ID.
+     */
     public static final ZoneId UTC = ZoneId.of("UTC");
+    /**
+     * General locale.
+     */
+    public static final Locale ROOT = Locale.ROOT;
+    /**
+     * Instance of parser configured with UTC timezone and general locale.
+     * Will count long values as unix seconds.
+     */
+    public static AnyTime UTCSeconds = new AnyTime(UTC, ROOT, true);
+    /**
+     * Instance of parser configured with UTC timezone and general locale.
+     * Will count long values as unix milliseconds.
+     */
+    public static AnyTime UTCMillis = new AnyTime(UTC, ROOT, false);
+
     private final ZoneId zoneId;
+    private final Locale locale;
     private final boolean seconds;
 
     private final ArrayList<Matcher> stringMatchers;
-
-    public static AnyTime UTCSeconds() {
-        return new AnyTime(UTC, true);
-    }
-
-    public static AnyTime UTCMillis() {
-        return new AnyTime(UTC, false);
-    }
 
     /**
      * Constructs any date/time reader/parser.
      *
      * @param zoneId     Zone identifier to use when parsing string dates.
+     * @param locale     Locale to use, reserved for future use.
      * @param intSeconds True if integers should be read as unix seconds, false if unix milliseconds.
      */
-    public AnyTime(
-            final ZoneId zoneId,
-            final boolean intSeconds
-    ) {
+    public AnyTime(final ZoneId zoneId, final Locale locale, final boolean intSeconds) {
         this.zoneId = Objects.requireNonNull(zoneId, "zoneId");
+        this.locale = Objects.requireNonNull(locale, "locale");
         this.seconds = intSeconds;
 
         stringMatchers = new ArrayList<>();
         stringMatchers.add(new Matcher(Util.patternYMDDash, s -> Util.fmtYMDDash.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
         stringMatchers.add(new Matcher(Util.patternDMYDash, s -> Util.fmtDMYDash.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
         stringMatchers.add(new Matcher(Util.patternMYSQL, s -> Util.fmtMYSQL.withZone(getZoneId()).parse(s)));
+        stringMatchers.add(new Matcher(Util.patternISO8601, s -> Util.fmtISO8601.withZone(getZoneId()).parse(s)));
     }
 
     /**
-     * @return Zone identifier this parses configured with.
+     * @return Zone identifier this parser configured with.
      */
     public ZoneId getZoneId() {
         return zoneId;
+    }
+
+    /**
+     * @return Locale this parser configured with.
+     */
+    public Locale getLocale() {
+        return locale;
     }
 
     /**

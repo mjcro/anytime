@@ -7,17 +7,18 @@ import org.testng.annotations.Test;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.Locale;
 import java.util.Optional;
 
 public class AnyTimeTest {
     @Test
     public void testUnixSecondsAndMilliseconds() {
         Assert.assertEquals(
-                new AnyTime(AnyTime.UTC, true).fromLong(1234567890), // Seconds
+                new AnyTime(AnyTime.UTC, Locale.ROOT, true).fromLong(1234567890), // Seconds
                 Instant.parse("2009-02-13T23:31:30Z")
         );
         Assert.assertEquals(
-                new AnyTime(AnyTime.UTC, false).fromLong(1234567890), // Milliseconds
+                new AnyTime(AnyTime.UTC, Locale.ROOT, false).fromLong(1234567890), // Milliseconds
                 Instant.parse("1970-01-15T06:56:07.890Z")
         );
     }
@@ -41,7 +42,7 @@ public class AnyTimeTest {
 
     @Test(dataProvider = "fromObjectDataProvider")
     public void testFromObject(Object given, Instant expected) {
-        Assert.assertEquals(AnyTime.UTCSeconds().from(given), expected);
+        Assert.assertEquals(AnyTime.UTCSeconds.from(given), expected);
     }
 
 
@@ -56,7 +57,7 @@ public class AnyTimeTest {
 
     @Test(dataProvider = "fromDoubleDataProvider")
     public void testFromDouble(double given, Instant expected) {
-        Assert.assertEquals(AnyTime.UTCSeconds().fromDouble(given), expected);
+        Assert.assertEquals(AnyTime.UTCSeconds.fromDouble(given), expected);
     }
 
     @DataProvider
@@ -74,6 +75,29 @@ public class AnyTimeTest {
 
                 {"2012-03-04 15:22:11", Instant.parse("2012-03-04T15:22:11Z")},
 
+                // ISO8601
+                {"2028-03-15T07:24:05-03:00", Instant.parse("2028-03-15T10:24:05Z")},
+                {"2028-03-15T07:24:05+00:00", Instant.parse("2028-03-15T07:24:05Z")},
+                {"2028-03-15T07:24:05+02:00", Instant.parse("2028-03-15T05:24:05Z")},
+                {"2028-03-15T07:24+02:00", Instant.parse("2028-03-15T05:24:00Z")},
+                {"2028-03-15T07+02:00", Instant.parse("2028-03-15T05:00:00Z")},
+                {"2028-03-15T07:24:05-0300", Instant.parse("2028-03-15T10:24:05Z")},
+                {"2028-03-15T07:24:05+0000", Instant.parse("2028-03-15T07:24:05Z")},
+                {"2028-03-15T07:24:05+0200", Instant.parse("2028-03-15T05:24:05Z")},
+                {"2028-03-15T07:24+0200", Instant.parse("2028-03-15T05:24:00Z")},
+                {"2028-03-15T07+0200", Instant.parse("2028-03-15T05:00:00Z")},
+                {"2028-03-15T07:24:05-03", Instant.parse("2028-03-15T10:24:05Z")},
+                {"2028-03-15T07:24:05+00", Instant.parse("2028-03-15T07:24:05Z")},
+                {"2028-03-15T07:24:05+02", Instant.parse("2028-03-15T05:24:05Z")},
+                {"2028-03-15T07:24+02", Instant.parse("2028-03-15T05:24:00Z")},
+                {"2028-03-15T07+02", Instant.parse("2028-03-15T05:00:00Z")},
+
+                // RFC 3339
+                {"2028-03-15 07:24:05Z", Instant.parse("2028-03-15T07:24:05Z")},
+                {"2028-03-15 07:24:05+02:00", Instant.parse("2028-03-15T05:24:05Z")},
+                {"2028-03-15 07:24+02:00", Instant.parse("2028-03-15T05:24:00Z")},
+                {"2028-03-15 07+02:00", Instant.parse("2028-03-15T05:00:00Z")},
+
                 // Standard Instant.parse
                 {"2007-11-13T23:31:30Z", Instant.parse("2007-11-13T23:31:30Z")}
         };
@@ -81,6 +105,6 @@ public class AnyTimeTest {
 
     @Test(dataProvider = "parseDataProvider")
     public void testParse(String given, Instant expected) {
-        Assert.assertEquals(AnyTime.UTCSeconds().parse(given), expected);
+        Assert.assertEquals(AnyTime.UTCSeconds.parse(given), expected);
     }
 }
