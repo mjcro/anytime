@@ -54,8 +54,14 @@ public class AnyTime {
         this.seconds = intSeconds;
 
         stringMatchers = new ArrayList<>();
+        if (Util.isDayMonthReversed(getLocale())) {
+            // US-like dates, MM/DD/YYYY
+            stringMatchers.add(new Matcher(Util.patternMDYDash, s -> Util.fmtMDYDash.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
+        } else {
+            // Europe-like dates, DD/MM/YYYY
+            stringMatchers.add(new Matcher(Util.patternDMYDash, s -> Util.fmtDMYDash.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
+        }
         stringMatchers.add(new Matcher(Util.patternYMDDash, s -> Util.fmtYMDDash.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
-        stringMatchers.add(new Matcher(Util.patternDMYDash, s -> Util.fmtDMYDash.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
         stringMatchers.add(new Matcher(Util.patternMYSQL, s -> Util.fmtMYSQL.withZone(getZoneId()).parse(s)));
         stringMatchers.add(new Matcher(Util.patternISO8601, s -> Util.fmtISO8601.withZone(getZoneId()).parse(s)));
     }

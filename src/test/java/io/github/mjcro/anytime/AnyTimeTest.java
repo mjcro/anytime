@@ -73,7 +73,7 @@ public class AnyTimeTest {
                 {"2021/06/05", Instant.parse("2021-06-05T00:00:00Z")},
                 {"12-11-1999", Instant.parse("1999-11-12T00:00:00Z")},
                 {"12/11/1999", Instant.parse("1999-11-12T00:00:00Z")},
-                {"12/11/1999", Instant.parse("1999-11-12T00:00:00Z")},
+                {"12.11.1999", Instant.parse("1999-11-12T00:00:00Z")},
 
                 {"2012-03-04 15:22:11", Instant.parse("2012-03-04T15:22:11Z")},
 
@@ -108,5 +108,21 @@ public class AnyTimeTest {
     @Test(dataProvider = "parseDataProvider")
     public void testParse(String given, Instant expected) {
         Assert.assertEquals(AnyTime.UTCSeconds.parse(given), expected);
+    }
+
+    @DataProvider
+    public Object[][] parseDataProviderReversed() {
+        return new Object[][]{
+                {"12-11-1999", Instant.parse("1999-12-11T00:00:00Z")},
+                {"12/11/1999", Instant.parse("1999-12-11T00:00:00Z")},
+                {"12.11.1999", Instant.parse("1999-12-11T00:00:00Z")},
+                {"6.11.1999", Instant.parse("1999-06-11T00:00:00Z")},
+                {"3/1/2023", Instant.parse("2023-03-01T00:00:00Z")},
+        };
+    }
+
+    @Test(dataProvider = "parseDataProviderReversed")
+    public void testParseReversed(String given, Instant expected) {
+        Assert.assertEquals(new AnyTime(AnyTime.UTC, Locale.US, true).parse(given), expected);
     }
 }
