@@ -4,12 +4,9 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 /**
@@ -124,6 +121,8 @@ public class AnyTime {
             return parse(any.toString());
         } else if (any instanceof Optional) {
             return from(((Optional<?>) any).orElse(null));
+        } else if (any instanceof Supplier) {
+            return from(((Supplier<?>) any).get());
         } else {
             throw new UnsupportedTypeException(any.getClass());
         }

@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class AnyTimeTest {
     @Test
@@ -29,6 +30,7 @@ public class AnyTimeTest {
         return new Object[][]{
                 {Instant.parse("2023-01-01T13:01:48Z"), Instant.parse("2023-01-01T13:01:48Z")},
                 {Optional.of(Instant.parse("2023-01-01T13:01:48Z")), Instant.parse("2023-01-01T13:01:48Z")},
+                {(Supplier<String>) () -> "1980-03-08 12:34:56", Instant.parse("1980-03-08T12:34:56Z")},
 
                 // Floating points
                 {1234567897.12, Instant.parse("2009-02-13T23:31:37.120Z")},
