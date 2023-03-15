@@ -187,6 +187,28 @@ public class AnyTime {
         return Instant.parse(string);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AnyTime)) return false;
+        AnyTime anyTime = (AnyTime) o;
+        return seconds == anyTime.seconds && getZoneId().equals(anyTime.getZoneId()) && getLocale().equals(anyTime.getLocale());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getZoneId(), getLocale(), seconds);
+    }
+
+    @Override
+    public String toString() {
+        return "AnyTime{" +
+                "zoneId=" + zoneId +
+                ", locale=" + (locale == ROOT ? "ROOT" : locale) +
+                ", " + (seconds ? "seconds" : "milliseconds") +
+                '}';
+    }
+
     /**
      * Utility class used to configure string parsers.
      */
