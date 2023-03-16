@@ -4,6 +4,7 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.sql.Date;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -32,9 +33,14 @@ public class AnyTimeTest {
                 {Optional.of(Instant.parse("2023-01-01T13:01:48Z")), Instant.parse("2023-01-01T13:01:48Z")},
                 {(Supplier<String>) () -> "1980-03-08 12:34:56", Instant.parse("1980-03-08T12:34:56Z")},
 
+                // Integers
+                {1234567897, Instant.parse("2009-02-13T23:31:37Z")},
+
                 // Floating points
                 {1234567897.12, Instant.parse("2009-02-13T23:31:37.120Z")},
                 {999999999.987654, Instant.parse("2001-09-09T01:46:39.987654016Z")},
+
+                {Date.from(Instant.parse("2009-02-13T23:31:37.120Z")), Instant.parse("2009-02-13T23:31:37.120Z")},
 
                 // Zoned
                 {LocalDate.parse("2031-12-13"), Instant.parse("2031-12-13T00:00:00Z")},
