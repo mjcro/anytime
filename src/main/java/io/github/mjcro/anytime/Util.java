@@ -32,10 +32,7 @@ class Util {
 
 
     static final Pattern patternMYSQL = Pattern.compile("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}");
-    static final DateTimeFormatter fmtMYSQL = DateTimeFormatter.ofPattern(
-            "yyyy-MM-dd HH:mm:ss",
-            Locale.ROOT
-    );
+    static final DateTimeFormatter fmtMYSQL = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     static final Pattern patternISO8601 = Pattern.compile("\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}(:\\d{2}(:\\d{2})?)?(Z|[+-]\\d{2}(:?\\d{2})?)?");
     static final Pattern patternISO8601_ZONE = Pattern.compile("\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}(:\\d{2}(:\\d{2})?)?(Z|[+-]\\d{2}(:?\\d{2})?)");
