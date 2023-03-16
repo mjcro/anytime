@@ -12,15 +12,15 @@ import java.util.regex.Pattern;
 class Util {
     static final Pattern patternDigitsOnly = Pattern.compile("\\d+");
 
-    static final Pattern patternYMDDash = Pattern.compile("\\d{4}[-./]\\d{2}[-./]\\d{2}");
+    static final Pattern patternYMDDash = Pattern.compile("\\d{2,4}[-./]\\d{1,2}[-./]\\d{1,2}");
     static final DateTimeFormatter fmtYMDDash = new DateTimeFormatterBuilder()
-            .appendPattern("yyyy-MM-dd")
+            .appendPattern("[yyyy][uu]-M-d")
             .parseDefaulting(ChronoField.NANO_OF_DAY, 0)
             .toFormatter();
 
-    static final Pattern patternDMYDash = Pattern.compile("\\d{2}[-./]\\d{2}[-./]\\d{4}");
+    static final Pattern patternDMYDash = Pattern.compile("\\d{1,2}[-./]\\d{1,2}[-./]\\d{2,4}");
     static final DateTimeFormatter fmtDMYDash = new DateTimeFormatterBuilder()
-            .appendPattern("dd-MM-yyyy")
+            .appendPattern("d-M-[yyyy][uu]")
             .parseDefaulting(ChronoField.NANO_OF_DAY, 0)
             .toFormatter();
 

@@ -75,11 +75,15 @@ public class AnyTimeTest {
                 {"1678890790", Instant.parse("2023-03-15T14:33:10Z")},
 
                 {"2021-06-05", Instant.parse("2021-06-05T00:00:00Z")},
+                {"2021-6-5", Instant.parse("2021-06-05T00:00:00Z")},
+                {"21-6-5", Instant.parse("2021-06-05T00:00:00Z")},
                 {"2021.06.05", Instant.parse("2021-06-05T00:00:00Z")},
                 {"2021/06/05", Instant.parse("2021-06-05T00:00:00Z")},
                 {"12-11-1999", Instant.parse("1999-11-12T00:00:00Z")},
                 {"12/11/1999", Instant.parse("1999-11-12T00:00:00Z")},
                 {"12.11.1999", Instant.parse("1999-11-12T00:00:00Z")},
+                {"2.1.1999", Instant.parse("1999-01-02T00:00:00Z")},
+                {"2.1.02", Instant.parse("2002-01-02T00:00:00Z")},
 
                 {"2012-03-04 15:22:11", Instant.parse("2012-03-04T15:22:11Z")},
 
@@ -117,18 +121,31 @@ public class AnyTimeTest {
     }
 
     @DataProvider
-    public Object[][] parseDataProviderReversed() {
+    public Object[][] parseDifferentLocalesDataProvider() {
         return new Object[][]{
-                {"12-11-1999", Instant.parse("1999-12-11T00:00:00Z")},
-                {"12/11/1999", Instant.parse("1999-12-11T00:00:00Z")},
-                {"12.11.1999", Instant.parse("1999-12-11T00:00:00Z")},
-                {"6.11.1999", Instant.parse("1999-06-11T00:00:00Z")},
-                {"3/1/2023", Instant.parse("2023-03-01T00:00:00Z")},
+                {"12-11-1999", Instant.parse("1999-12-11T00:00:00Z"), Locale.US},
+                {"12/11/1999", Instant.parse("1999-12-11T00:00:00Z"), Locale.US},
+                {"12.11.1999", Instant.parse("1999-12-11T00:00:00Z"), Locale.US},
+                {"6.11.1999", Instant.parse("1999-06-11T00:00:00Z"), Locale.US},
+                {"3/1/2023", Instant.parse("2023-03-01T00:00:00Z"), Locale.US},
+                {"11-12-1999", Instant.parse("1999-12-11T00:00:00Z"), Locale.KOREA},
+                {"11/12/1999", Instant.parse("1999-12-11T00:00:00Z"), Locale.KOREA},
+                {"01/03/2023", Instant.parse("2023-03-01T00:00:00Z"), Locale.GERMANY},
+                {"01-03-2023", Instant.parse("2023-03-01T00:00:00Z"), Locale.GERMANY},
+                {"01.03.2023", Instant.parse("2023-03-01T00:00:00Z"), Locale.GERMANY},
         };
     }
 
-    @Test(dataProvider = "parseDataProviderReversed")
-    public void testParseReversed(String given, Instant expected) {
-        Assert.assertEquals(new AnyTime(AnyTime.UTC, Locale.US, true).parse(given), expected);
+    @Test(dataProvider = "parseDifferentLocalesDataProvider")
+    public void testParseDifferentLocales(String given, Instant expected, Locale locale) {
+        Assert.assertEquals(new AnyTime(AnyTime.UTC, locale, true).parse(given), expected, "Error parsing '" + given + "'");
+    }
+
+    @Test
+    public void testParseTwoDigitYear() {
+        Assert.assertEquals(
+                AnyTime.UTCSeconds.parse("1.2.99"),
+                Instant.parse("2099-02-01T00:00:00Z") // Year 2099 !
+        );
     }
 }
