@@ -4,7 +4,11 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAccessor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -193,25 +197,57 @@ public class AnyTime {
         return Instant.parse(string);
     }
 
+    /**
+     * Works similar to {@link #from} but instead of throwing
+     * exception it will return Optional.empty.
+     *
+     * @param any Any value to read instant from.
+     * @return Optional instant result.
+     */
+    public Optional<Instant> optionalFrom(Object any) {
+        try {
+            return Optional.of(from(any));
+        } catch (Exception ignore) {
+            // Suppressing
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Works similar to {@link #from} but instead of throwing
+     * exception it will return Optional.empty.
+     *
+     * @param string String to parse.
+     * @return Optional instant result.
+     */
+    public Optional<Instant> optionalParse(String string) {
+        try {
+            return Optional.of(parse(string));
+        } catch (Exception ignore) {
+            // Suppressing
+            return Optional.empty();
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof AnyTime)) return false;
         AnyTime anyTime = (AnyTime) o;
-        return seconds == anyTime.seconds && getZoneId().equals(anyTime.getZoneId()) && getLocale().equals(anyTime.getLocale());
+        return areIntegersSeconds() == anyTime.areIntegersSeconds() && getZoneId().equals(anyTime.getZoneId()) && getLocale().equals(anyTime.getLocale());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getZoneId(), getLocale(), seconds);
+        return Objects.hash(getZoneId(), getLocale(), areIntegersSeconds());
     }
 
     @Override
     public String toString() {
         return "AnyTime{" +
-                "zoneId=" + zoneId +
-                ", locale=" + (locale == ROOT ? "ROOT" : locale) +
-                ", " + (seconds ? "seconds" : "milliseconds") +
+                "zoneId=" + getZoneId() +
+                ", locale=" + (getLocale() == ROOT ? "ROOT" : getLocale()) +
+                ", " + (areIntegersSeconds() ? "seconds" : "milliseconds") +
                 '}';
     }
 
