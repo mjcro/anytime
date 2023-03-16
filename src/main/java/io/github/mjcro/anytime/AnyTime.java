@@ -27,7 +27,7 @@ public class AnyTime {
     /**
      * General locale.
      */
-    public static final Locale ROOT = Locale.ROOT;
+    public static final Locale ROOT = Locale.UK;
     /**
      * Instance of parser configured with UTC timezone and general locale.
      * Will count long values as unix seconds.
@@ -58,7 +58,7 @@ public class AnyTime {
         this.seconds = intSeconds;
 
         stringMatchers = new ArrayList<>();
-        if (Util.isDayMonthReversed(getLocale())) {
+        if (Util.isMonthBeforeDay(getLocale())) {
             // US-like dates, MM/DD/YYYY
             stringMatchers.add(new Matcher(Util.patternMDYDash, s -> Util.fmtMDYDash.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
         } else {
@@ -67,6 +67,7 @@ public class AnyTime {
         }
         stringMatchers.add(new Matcher(Util.patternYMDDash, s -> Util.fmtYMDDash.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
         stringMatchers.add(new Matcher(Util.patternMYSQL, s -> Util.fmtMYSQL.withZone(getZoneId()).parse(s)));
+        stringMatchers.add(new Matcher(Util.patternISO8601_ZONE, s -> Util.fmtISO8601.parse(s))); // Java 8 fix
         stringMatchers.add(new Matcher(Util.patternISO8601, s -> Util.fmtISO8601.withZone(getZoneId()).parse(s)));
     }
 

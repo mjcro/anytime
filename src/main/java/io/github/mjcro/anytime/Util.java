@@ -1,13 +1,12 @@
 package io.github.mjcro.anytime;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
-import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 class Util {
@@ -38,7 +37,8 @@ class Util {
             Locale.ROOT
     );
 
-    static final Pattern patternISO8601 = Pattern.compile("\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}(:\\d{2}(:\\d{2})?)?(Z|[+-]\\d{2}(:?\\d{2})?)");
+    static final Pattern patternISO8601 = Pattern.compile("\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}(:\\d{2}(:\\d{2})?)?(Z|[+-]\\d{2}(:?\\d{2})?)?");
+    static final Pattern patternISO8601_ZONE = Pattern.compile("\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}(:\\d{2}(:\\d{2})?)?(Z|[+-]\\d{2}(:?\\d{2})?)");
     static final DateTimeFormatter fmtISO8601 = new DateTimeFormatterBuilder()
             .appendPattern("yyyy-MM-dd['T'][' ']HH[:mm[:ss]]")
             .optionalStart().appendZoneId().optionalEnd()
@@ -56,14 +56,11 @@ class Util {
      * @param locale Locale to use.
      * @return True if date format is MM/DD, false if date format is DD/MM.
      */
-    public static boolean isDayMonthReversed(Locale locale) {
+    public static boolean isMonthBeforeDay(Locale locale) {
         Objects.requireNonNull(locale, "locale");
 
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        cal.set(2022, Calendar.JUNE, 9);
-
-        String x = DateFormat.getDateInstance(DateFormat.SHORT, locale).format(cal.getTime());
-        return x.startsWith("6") || x.startsWith("06");
+        SimpleDateFormat dateInstance = (SimpleDateFormat) SimpleDateFormat.getDateInstance(DateFormat.SHORT, locale);
+        return dateInstance.toPattern().startsWith("M");
     }
 
     private Util() {

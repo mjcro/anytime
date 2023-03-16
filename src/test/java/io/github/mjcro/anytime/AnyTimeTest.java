@@ -113,7 +113,7 @@ public class AnyTimeTest {
 
     @Test(dataProvider = "parseDataProvider")
     public void testParse(String given, Instant expected) {
-        Assert.assertEquals(AnyTime.UTCSeconds.parse(given), expected, "Error parsing '" + given +"'");
+        Assert.assertEquals(AnyTime.UTCSeconds.parse(given), expected, "Error parsing '" + given + "'");
     }
 
     @DataProvider
