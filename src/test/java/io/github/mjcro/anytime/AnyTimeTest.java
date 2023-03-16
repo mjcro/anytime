@@ -88,6 +88,7 @@ public class AnyTimeTest {
                 {"2012-03-04 15:22:11", Instant.parse("2012-03-04T15:22:11Z")},
 
                 // ISO8601
+                {"2017-07-10T08:00:00-0800", Instant.parse("2017-07-10T16:00:00Z")},
                 {"2028-03-15T07:24:05-03:00", Instant.parse("2028-03-15T10:24:05Z")},
                 {"2028-03-15T07:24:05+00:00", Instant.parse("2028-03-15T07:24:05Z")},
                 {"2028-03-15T07:24:05+02:00", Instant.parse("2028-03-15T05:24:05Z")},
@@ -109,6 +110,11 @@ public class AnyTimeTest {
                 {"2028-03-15 07:24:05+02:00", Instant.parse("2028-03-15T05:24:05Z")},
                 {"2028-03-15 07:24+02:00", Instant.parse("2028-03-15T05:24:00Z")},
                 {"2028-03-15 07+02:00", Instant.parse("2028-03-15T05:00:00Z")},
+
+                // API vendors
+                {"Mon Nov 29 21:18:15 +0000 2010", Instant.parse("2010-11-29T21:18:15Z")}, // Twitter
+                {"Thu Apr 06 15:24:15 +0000 2017", Instant.parse("2017-04-06T15:24:15Z")}, // Twitter
+                {"2017-06-06T18:01:13+0000", Instant.parse("2017-06-06T18:01:13Z")}, // Facebook
 
                 // Standard Instant.parse
                 {"2007-11-13T23:31:30Z", Instant.parse("2007-11-13T23:31:30Z")}

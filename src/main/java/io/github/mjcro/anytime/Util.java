@@ -46,6 +46,10 @@ class Util {
             .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
             .toFormatter();
 
+    // Temporary name - twitter format
+    static final Pattern patternTwitter = Pattern.compile("\\p{L}{3} \\p{L}{3} \\d{2} \\d{2}:\\d{2}:\\d{2} [+-]\\d{4} \\d{4}");
+    static final DateTimeFormatter fmtTwitter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss X yyyy");
+
     /**
      * Depending on locale determines if month and date placements are reversed.
      * Common is DD/MM format while "reversed" in terms of AnyTime is MM/DD.

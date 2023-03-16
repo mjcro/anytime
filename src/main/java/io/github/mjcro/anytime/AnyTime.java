@@ -83,6 +83,7 @@ public class AnyTime {
         stringProcessors.add(new Matcher(Util.patternMYSQL, s -> Util.fmtMYSQL.withZone(getZoneId()).parse(s)));
         stringProcessors.add(new Matcher(Util.patternISO8601_ZONE, s -> Util.fmtISO8601.parse(s))); // Java 8 fix
         stringProcessors.add(new Matcher(Util.patternISO8601, s -> Util.fmtISO8601.withZone(getZoneId()).parse(s)));
+        stringProcessors.add(new Matcher(Util.patternTwitter, s -> Util.fmtTwitter.withLocale(getLocale()).parse(s)));
     }
 
     /**
