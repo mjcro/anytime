@@ -14,13 +14,14 @@ Parse time in almost any widely used format into Instant using regexps and `Date
 <dependency>
     <groupId>io.github.mjcro</groupId>
     <artifactId>anytime</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
 ## Goal
 
 - :tada: Provide simple way to parse commonly used date/time representations in APIs and clearing files into `Instant`
+- :twisted_rightwards_arrows: Controversial formats like `d/m/y` and `m/d/y` should be solved by providing corresponding locale.
 - :bulb: Provide simple way to convert misc Java date/time representations into `Instant`
 
 ## Not a goal
@@ -42,8 +43,18 @@ Parse time in almost any widely used format into Instant using regexps and `Date
 - `mm-dd-yyyy` (locale dependent)
 - `mm/dd/yyyy` (locale dependent)
 - `mm.dd.yyyy` (locale dependent)
+- `m-d-yyyy` (locale dependent)
+- `m.d.yyyy` (locale dependent)
 - `m/d/yyyy` (locale dependent)
+- `m-d-yy` (locale dependent)
+- `m.d.yy` (locale dependent)
 - `m/d/yy` (locale dependent)
+- `d-m-yyyy` (locale dependent)
+- `d.m.yyyy` (locale dependent)
+- `d/m/yyyy` (locale dependent)
+- `d-m-yy` (locale dependent)
+- `d.m.yy` (locale dependent)
+- `d/m/yy` (locale dependent)
 - `yyyy-mm-ddThh:mm:ss-03:00` (ISO 8601)
 - `yyyy-mm-ddThh:mm:ssZ` (ISO 8601)
 - `yyyy-mm-ddThh:mm-03:00` (ISO 8601)
