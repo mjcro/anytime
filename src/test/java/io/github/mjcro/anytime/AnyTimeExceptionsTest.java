@@ -37,11 +37,11 @@ public class AnyTimeExceptionsTest {
 
     @Test(expectedExceptions = EmptyInstantException.class)
     public void testCustomProcessorReturningNull() {
-        new AnyTime(
-                AnyTime.UTC,
-                AnyTime.ROOT,
-                true,
-                new StringProcessor() {
+        AnyTime.Builder()
+                .withZone(AnyTime.UTC)
+                .withLocale(AnyTime.ROOT)
+                .withIntegersAsUnixSeconds(true)
+                .withProcessor(new StringProcessor() {
                     @Override
                     public Instant apply(final String s) {
                         return null;
@@ -51,7 +51,8 @@ public class AnyTimeExceptionsTest {
                     public boolean test(final String s) {
                         return true;
                     }
-                }
-        ).parse("12345");
+                })
+                .build()
+                .parse("12345");
     }
 }

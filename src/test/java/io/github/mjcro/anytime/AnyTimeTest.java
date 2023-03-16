@@ -16,11 +16,11 @@ public class AnyTimeTest {
     @Test
     public void testUnixSecondsAndMilliseconds() {
         Assert.assertEquals(
-                new AnyTime(AnyTime.UTC, Locale.ROOT, true).fromLong(1234567890), // Seconds
+                AnyTime.UTCSeconds.fromLong(1234567890), // Seconds
                 Instant.parse("2009-02-13T23:31:30Z")
         );
         Assert.assertEquals(
-                new AnyTime(AnyTime.UTC, Locale.ROOT, false).fromLong(1234567890), // Milliseconds
+                AnyTime.UTCMillis.fromLong(1234567890), // Milliseconds
                 Instant.parse("1970-01-15T06:56:07.890Z")
         );
     }

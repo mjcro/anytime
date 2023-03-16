@@ -4,12 +4,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -33,12 +28,20 @@ public class AnyTime {
      * Instance of parser configured with UTC timezone and general locale.
      * Will count long values as unix seconds.
      */
-    public static AnyTime UTCSeconds = new AnyTime(UTC, ROOT, true);
+    public static AnyTime UTCSeconds = Builder()
+            .withIntegersAsUnixSeconds()
+            .withZone(UTC)
+            .withLocale(ROOT)
+            .build();
     /**
      * Instance of parser configured with UTC timezone and general locale.
      * Will count long values as unix milliseconds.
      */
-    public static AnyTime UTCMillis = new AnyTime(UTC, ROOT, false);
+    public static AnyTime UTCMillis = Builder()
+            .withIntegersAsUnixMilliseconds()
+            .withZone(UTC)
+            .withLocale(ROOT)
+            .build();
 
     private final ZoneId zoneId;
     private final Locale locale;
@@ -282,6 +285,112 @@ public class AnyTime {
         @Override
         public Instant apply(String s) {
             return Instant.from(reader.apply(s));
+        }
+    }
+
+    /**
+     * @return Builder.
+     */
+    public static Builder Builder() {
+        return new Builder();
+    }
+
+    /**
+     * Mutable helper to build {@link AnyTime} instance.
+     */
+    public static final class Builder {
+        private ZoneId zoneId = UTC;
+        private Locale locale = AnyTime.ROOT;
+        private boolean integersAsUnixSeconds = true;
+        private final ArrayList<StringProcessor> processors = new ArrayList<>();
+
+        /**
+         * Set time zone.
+         *
+         * @param zoneId Zone identifier.
+         * @return Self.
+         */
+        public Builder withZone(ZoneId zoneId) {
+            this.zoneId = Objects.requireNonNull(zoneId, "zoneId");
+            return this;
+        }
+
+        /**
+         * Set time zone.
+         *
+         * @param timeZone Time zone.
+         * @return Self.
+         */
+        public Builder withZone(TimeZone timeZone) {
+            return withZone(timeZone.toZoneId());
+        }
+
+        /**
+         * Set time zone.
+         *
+         * @param zoneId Name of ZoneId.
+         * @return Self.
+         */
+        public Builder withZone(String zoneId) {
+            return withZone(ZoneId.of(zoneId));
+        }
+
+        /**
+         * Set locale.
+         *
+         * @param locale Locale.
+         * @return Self.
+         */
+        public Builder withLocale(Locale locale) {
+            this.locale = Objects.requireNonNull(locale, "locale");
+            return this;
+        }
+
+        /**
+         * Sets integer processing mode.
+         *
+         * @param value True if integers are unix seconds, false if unix milliseconds.
+         * @return Self.
+         */
+        public Builder withIntegersAsUnixSeconds(boolean value) {
+            this.integersAsUnixSeconds = value;
+            return this;
+        }
+
+        /**
+         * Sets integer processing mode - all integers are unix seconds.
+         *
+         * @return Self.
+         */
+        public Builder withIntegersAsUnixSeconds() {
+            return withIntegersAsUnixSeconds(true);
+        }
+
+        /**
+         * Sets integer processing mode - all integers are unix milliseconds.
+         *
+         * @return Self.
+         */
+        public Builder withIntegersAsUnixMilliseconds() {
+            return withIntegersAsUnixSeconds(false);
+        }
+
+        /**
+         * Appends new string parse processor.
+         *
+         * @param processor String parse processor to use.
+         * @return Self.
+         */
+        public Builder withProcessor(StringProcessor processor) {
+            this.processors.add(Objects.requireNonNull(processor, "processor"));
+            return this;
+        }
+
+        /**
+         * @return Date/time parser instance.
+         */
+        public AnyTime build() {
+            return new AnyTime(zoneId, locale, integersAsUnixSeconds, processors.toArray(new StringProcessor[0]));
         }
     }
 }
