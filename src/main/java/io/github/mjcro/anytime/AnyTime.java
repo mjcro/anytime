@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -43,32 +44,42 @@ public class AnyTime {
     private final Locale locale;
     private final boolean seconds;
 
-    private final ArrayList<Matcher> stringMatchers;
+    private final ArrayList<StringProcessor> stringProcessors;
 
     /**
      * Constructs any date/time reader/parser.
      *
-     * @param zoneId     Zone identifier to use when parsing string dates.
-     * @param locale     Locale to use, reserved for future use.
-     * @param intSeconds True if integers should be read as unix seconds, false if unix milliseconds.
+     * @param zoneId                 Zone identifier to use when parsing string dates.
+     * @param locale                 Locale to use, reserved for future use.
+     * @param intSeconds             True if integers should be read as unix seconds, false if unix milliseconds.
+     * @param customStringProcessors Custom string processor to use during parse. They will be invoked first.
      */
-    public AnyTime(final ZoneId zoneId, final Locale locale, final boolean intSeconds) {
+    public AnyTime(
+            final ZoneId zoneId,
+            final Locale locale,
+            final boolean intSeconds,
+            final StringProcessor... customStringProcessors
+    ) {
         this.zoneId = Objects.requireNonNull(zoneId, "zoneId");
         this.locale = Objects.requireNonNull(locale, "locale");
         this.seconds = intSeconds;
 
-        stringMatchers = new ArrayList<>();
+        stringProcessors = new ArrayList<>();
+        if (customStringProcessors != null && customStringProcessors.length > 0) {
+            stringProcessors.addAll(Arrays.asList(customStringProcessors));
+        }
+        stringProcessors.add(new Matcher(Util.patternDigitsOnly, s -> fromLong(Long.parseLong(s))));
         if (Util.isMonthBeforeDay(getLocale())) {
             // US-like dates, MM/DD/YYYY
-            stringMatchers.add(new Matcher(Util.patternMDYDash, s -> Util.fmtMDYDash.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
+            stringProcessors.add(new Matcher(Util.patternMDYDash, s -> Util.fmtMDYDash.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
         } else {
             // Europe-like dates, DD/MM/YYYY
-            stringMatchers.add(new Matcher(Util.patternDMYDash, s -> Util.fmtDMYDash.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
+            stringProcessors.add(new Matcher(Util.patternDMYDash, s -> Util.fmtDMYDash.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
         }
-        stringMatchers.add(new Matcher(Util.patternYMDDash, s -> Util.fmtYMDDash.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
-        stringMatchers.add(new Matcher(Util.patternMYSQL, s -> Util.fmtMYSQL.withZone(getZoneId()).parse(s)));
-        stringMatchers.add(new Matcher(Util.patternISO8601_ZONE, s -> Util.fmtISO8601.parse(s))); // Java 8 fix
-        stringMatchers.add(new Matcher(Util.patternISO8601, s -> Util.fmtISO8601.withZone(getZoneId()).parse(s)));
+        stringProcessors.add(new Matcher(Util.patternYMDDash, s -> Util.fmtYMDDash.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
+        stringProcessors.add(new Matcher(Util.patternMYSQL, s -> Util.fmtMYSQL.withZone(getZoneId()).parse(s)));
+        stringProcessors.add(new Matcher(Util.patternISO8601_ZONE, s -> Util.fmtISO8601.parse(s))); // Java 8 fix
+        stringProcessors.add(new Matcher(Util.patternISO8601, s -> Util.fmtISO8601.withZone(getZoneId()).parse(s)));
     }
 
     /**
@@ -182,15 +193,14 @@ public class AnyTime {
             throw new EmptyInstantException();
         }
 
-        // Check for numeric
-        if (Util.patternDigitsOnly.matcher(string).matches()) {
-            return fromLong(Long.parseLong(string));
-        }
-
         // Applying matchers
-        for (Matcher matcher : stringMatchers) {
-            if (matcher.pattern.matcher(string).matches()) {
-                return Instant.from(matcher.reader.apply(string));
+        for (StringProcessor processor : stringProcessors) {
+            if (processor.test(string)) {
+                Instant value = processor.apply(string);
+                if (value == null) {
+                    throw new EmptyInstantException(processor);
+                }
+                return value;
             }
         }
 
@@ -255,13 +265,23 @@ public class AnyTime {
     /**
      * Utility class used to configure string parsers.
      */
-    private static final class Matcher {
+    private static final class Matcher implements StringProcessor {
         private final Pattern pattern;
         private final Function<String, TemporalAccessor> reader;
 
         private Matcher(Pattern pattern, Function<String, TemporalAccessor> reader) {
             this.pattern = pattern;
             this.reader = reader;
+        }
+
+        @Override
+        public boolean test(String s) {
+            return pattern.matcher(s).matches();
+        }
+
+        @Override
+        public Instant apply(String s) {
+            return Instant.from(reader.apply(s));
         }
     }
 }

@@ -7,4 +7,8 @@ public class EmptyInstantException extends RuntimeException {
     EmptyInstantException() {
         super("Unable to produce instant from empty source data");
     }
+
+    EmptyInstantException(StringProcessor processor) {
+        super("StringProcessor " + processor + " returned an empty instant");
+    }
 }

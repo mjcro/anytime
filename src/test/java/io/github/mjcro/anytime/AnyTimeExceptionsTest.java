@@ -2,6 +2,8 @@ package io.github.mjcro.anytime;
 
 import org.testng.annotations.Test;
 
+import java.time.Instant;
+
 public class AnyTimeExceptionsTest {
     @Test(expectedExceptions = UnsupportedTypeException.class)
     public void testFromUnsupported() {
@@ -31,5 +33,25 @@ public class AnyTimeExceptionsTest {
     @Test(expectedExceptions = NumberFormatException.class)
     public void testParseLargeLong() {
         AnyTime.UTCSeconds.parse("123456789012345678901234567890");
+    }
+
+    @Test(expectedExceptions = EmptyInstantException.class)
+    public void testCustomProcessorReturningNull() {
+        new AnyTime(
+                AnyTime.UTC,
+                AnyTime.ROOT,
+                true,
+                new StringProcessor() {
+                    @Override
+                    public Instant apply(final String s) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean test(final String s) {
+                        return true;
+                    }
+                }
+        ).parse("12345");
     }
 }
