@@ -214,7 +214,7 @@ public class AnyTime {
     }
 
     /**
-     * Works similar to {@link #from} but instead of throwing
+     * Works similar to {@link #parse} but instead of throwing
      * exception it will return Optional.empty.
      *
      * @param string String to parse.
