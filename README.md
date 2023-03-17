@@ -14,7 +14,7 @@ Parse time in almost any widely used format into Instant using regexps and `Date
 <dependency>
     <groupId>io.github.mjcro</groupId>
     <artifactId>anytime</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 
