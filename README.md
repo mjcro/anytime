@@ -14,7 +14,7 @@ Parse time in almost any widely used format into Instant using regexps and `Date
 <dependency>
     <groupId>io.github.mjcro</groupId>
     <artifactId>anytime</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
@@ -67,3 +67,4 @@ Parse time in almost any widely used format into Instant using regexps and `Date
 - `yyyy-mm-dd hh:mmZ` (RFC 3339)
 - `yyyy-mm-dd hh+02:00` (RFC 3339)
 - `yyyy-mm-dd hhZ` (RFC 3339)
+- `EEE MMM dd HH:mm:ss X yyyy`
