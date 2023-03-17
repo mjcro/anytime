@@ -75,12 +75,14 @@ public class AnyTime {
         if (Util.isMonthBeforeDay(getLocale())) {
             // US-like dates, MM/DD/YYYY
             stringProcessors.add(new Matcher(Util.patternMDYDash, s -> Util.fmtMDYDash.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
+            stringProcessors.add(new Matcher(Util.patternMYSQLReverse, s -> Util.fmtMYSQLReverseMonthFirst.withZone(zoneId).parse(s.replaceAll("[./]", "-"))));
         } else {
             // Europe-like dates, DD/MM/YYYY
             stringProcessors.add(new Matcher(Util.patternDMYDash, s -> Util.fmtDMYDash.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
+            stringProcessors.add(new Matcher(Util.patternMYSQLReverse, s -> Util.fmtMYSQLReverse.withZone(zoneId).parse(s.replaceAll("[./]", "-"))));
         }
         stringProcessors.add(new Matcher(Util.patternYMDDash, s -> Util.fmtYMDDash.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
-        stringProcessors.add(new Matcher(Util.patternMYSQL, s -> Util.fmtMYSQL.withZone(getZoneId()).parse(s)));
+        stringProcessors.add(new Matcher(Util.patternMYSQL, s -> Util.fmtMYSQL.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
         stringProcessors.add(new Matcher(Util.patternISO8601_ZONE, s -> Util.fmtISO8601.parse(s))); // Java 8 fix
         stringProcessors.add(new Matcher(Util.patternISO8601, s -> Util.fmtISO8601.withZone(getZoneId()).parse(s)));
         stringProcessors.add(new Matcher(Util.patternTwitter, s -> Util.fmtTwitter.withLocale(getLocale()).parse(s)));

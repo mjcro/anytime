@@ -105,6 +105,13 @@ public class AnyTimeTest {
                 {"2028-03-15T07:24+02", Instant.parse("2028-03-15T05:24:00Z")},
                 {"2028-03-15T07+02", Instant.parse("2028-03-15T05:00:00Z")},
 
+                // ISO-Like
+                {"2012.08.22 04:02:16", Instant.ofEpochSecond(1345608136)},
+                {"2012/08/22 04:02:16", Instant.ofEpochSecond(1345608136)},
+                {"22-08-2012 04:02:16", Instant.ofEpochSecond(1345608136)},
+                {"22.08.2012 04:02:16", Instant.ofEpochSecond(1345608136)},
+                {"22/08/2012 04:02:16", Instant.ofEpochSecond(1345608136)},
+
                 // RFC 3339
                 {"2028-03-15 07:24:05Z", Instant.parse("2028-03-15T07:24:05Z")},
                 {"2028-03-15 07:24:05+02:00", Instant.parse("2028-03-15T05:24:05Z")},

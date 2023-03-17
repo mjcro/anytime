@@ -31,8 +31,12 @@ class Util {
             .toFormatter();
 
 
-    static final Pattern patternMYSQL = Pattern.compile("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}");
+    static final Pattern patternMYSQL = Pattern.compile("\\d{4}[-./]\\d{2}[-./]\\d{2} \\d{2}:\\d{2}:\\d{2}");
     static final DateTimeFormatter fmtMYSQL = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    static final Pattern patternMYSQLReverse = Pattern.compile("\\d{2}[-./]\\d{2}[-./]\\d{4} \\d{2}:\\d{2}:\\d{2}");
+    static final DateTimeFormatter fmtMYSQLReverse = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    static final DateTimeFormatter fmtMYSQLReverseMonthFirst = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
 
     static final Pattern patternISO8601 = Pattern.compile("\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}(:\\d{2}(:\\d{2})?)?(Z|[+-]\\d{2}(:?\\d{2})?)?");
     static final Pattern patternISO8601_ZONE = Pattern.compile("\\d{4}-\\d{2}-\\d{2}[T ]\\d{2}(:\\d{2}(:\\d{2})?)?(Z|[+-]\\d{2}(:?\\d{2})?)");
