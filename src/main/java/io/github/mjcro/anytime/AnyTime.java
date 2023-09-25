@@ -5,7 +5,13 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.TimeZone;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -86,6 +92,7 @@ public class AnyTime {
         stringProcessors.add(new Matcher(Util.patternMYSQL, s -> Util.fmtMYSQL.withZone(getZoneId()).parse(s.replaceAll("[./]", "-"))));
         stringProcessors.add(new Matcher(Util.patternISO8601_ZONE, s -> Util.fmtISO8601.parse(s))); // Java 8 fix
         stringProcessors.add(new Matcher(Util.patternISO8601, s -> Util.fmtISO8601.withZone(getZoneId()).parse(s)));
+        stringProcessors.add(new Matcher(Util.patternISO8601_PARTIAL_NANOS, s -> Util.fmtISO8601.withZone(getZoneId()).parse(s + Util.repeat("0", 27 - s.length()))));
         stringProcessors.add(new Matcher(Util.patternTwitter, s -> Util.fmtTwitter.withLocale(getLocale()).parse(s)));
     }
 

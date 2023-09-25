@@ -6,7 +6,7 @@
 
     <groupId>io.github.mjcro</groupId>
     <artifactId>anytime</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.4</version>
 
     <name>MicroJ Any Time</name>
     <description>Parse time in almost any widely used format into Instant</description>
