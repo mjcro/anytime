@@ -3,6 +3,7 @@ package io.github.mjcro.anytime;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.function.Function;
@@ -211,7 +212,12 @@ public class AnyTime {
         }
 
         // The final attempt - using instant itself
-        return Instant.parse(string);
+        try {
+            return Instant.parse(string);
+        } catch (Exception e) {
+            // Fallback to zoned date time parsing
+            return ZonedDateTime.parse(string).toInstant();
+        }
     }
 
     /**
